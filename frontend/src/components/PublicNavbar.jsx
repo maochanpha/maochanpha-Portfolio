@@ -60,12 +60,6 @@ function PublicNavbar() {
                 Contact
               </NavLink>
             </li>
-
-            <li className="nav-item">
-              <NavLink className="nav-link" to="/admin/login">
-                Admin
-              </NavLink>
-            </li>
           </ul>
         </div>
       </div>

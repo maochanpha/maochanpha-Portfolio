@@ -67,7 +67,7 @@ function Login() {
               type="email"
               name="email"
               className="form-control"
-              placeholder="admin@example.com"
+              placeholder="Enter Admin Email"
               value={form.email}
               onChange={handleChange}
               required
@@ -81,7 +81,7 @@ function Login() {
               type="password"
               name="password"
               className="form-control"
-              placeholder="admin123"
+              placeholder="Enter Admin Password"
               value={form.password}
               onChange={handleChange}
               required
@@ -93,9 +93,7 @@ function Login() {
           </button>
         </form>
 
-        <p className="text-center text-muted mt-3 mb-0">
-          Default: admin@example.com / admin123
-        </p>
+        
       </div>
     </div>
   );
