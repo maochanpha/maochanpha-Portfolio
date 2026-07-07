@@ -15,6 +15,14 @@ import Contact from "./pages/Contact";
 
 import Login from "./pages/admin/Login";
 import Dashboard from "./pages/admin/Dashboard";
+import SkillsAdmin from "./pages/admin/SkillsAdmin";
+import ProjectsAdmin from "./pages/admin/ProjectsAdmin";
+import UxUiAdmin from "./pages/admin/UxUiAdmin";
+import PosterAdmin from "./pages/admin/PosterAdmin";
+import EducationAdmin from "./pages/admin/EducationAdmin";
+import ExperienceAdmin from "./pages/admin/ExperienceAdmin";
+import MessagesAdmin from "./pages/admin/MessageAdmin";
+import ProfileAdmin from "./pages/admin/ProfileAdmin";
 
 function App() {
   return (
@@ -45,6 +53,14 @@ function App() {
           }
         >
           <Route path="dashboard" element={<Dashboard />} />
+          <Route path="skills" element={<SkillsAdmin />} />
+          <Route path="projects" element={<ProjectsAdmin />} />
+          <Route path="ux-ui-projects" element={<UxUiAdmin />} />
+          <Route path="poster-projects" element={<PosterAdmin />} />
+          <Route path="education" element={<EducationAdmin />} />
+          <Route path="experience" element={<ExperienceAdmin />} />
+          <Route path="messages" element={<MessagesAdmin />} />
+          <Route path="profile" element={<ProfileAdmin />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -1,52 +1,114 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Project;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ProjectController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        return Project::latest()->get();
+        $projects = Project::latest()->get();
+
+        return response()->json($projects);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        Project::create([
-            
+        $validated = $request->validate([
+            'title' => ['required', 'string', 'max:200'],
+            'description' => ['required', 'string'],
+            'technologies' => ['nullable'],
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'github_url' => ['nullable', 'url'],
+            'live_demo_url' => ['nullable', 'url'],
+            'category' => ['nullable', 'string', 'max:100'],
+            'is_featured' => ['nullable', 'boolean'],
+        ]);
+
+        $validated['slug'] = Str::slug($request->title) . '-' . time();
+
+        if ($request->filled('technologies')) {
+            $validated['technologies'] = $this->formatArrayInput($request->technologies);
+        }
+
+        if ($request->hasFile('image')) {
+            $validated['image'] = $request->file('image')->store('projects', 'public');
+        }
+
+        $project = Project::create($validated);
+
+        return response()->json([
+            'message' => 'Project created successfully.',
+            'data' => $project,
+        ], 201);
+    }
+
+    public function show(Project $project)
+    {
+        return response()->json($project);
+    }
+
+    public function update(Request $request, Project $project)
+    {
+        $validated = $request->validate([
+            'title' => ['required', 'string', 'max:200'],
+            'description' => ['required', 'string'],
+            'technologies' => ['nullable'],
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'github_url' => ['nullable', 'url'],
+            'live_demo_url' => ['nullable', 'url'],
+            'category' => ['nullable', 'string', 'max:100'],
+            'is_featured' => ['nullable', 'boolean'],
+        ]);
+
+        if ($request->title !== $project->title) {
+            $validated['slug'] = Str::slug($request->title) . '-' . time();
+        }
+
+        if ($request->filled('technologies')) {
+            $validated['technologies'] = $this->formatArrayInput($request->technologies);
+        }
+
+        if ($request->hasFile('image')) {
+            if ($project->image) {
+                Storage::disk('public')->delete($project->image);
+            }
+
+            $validated['image'] = $request->file('image')->store('projects', 'public');
+        }
+
+        $project->update($validated);
+
+        return response()->json([
+            'message' => 'Project updated successfully.',
+            'data' => $project,
         ]);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function destroy(Project $project)
     {
-        //
+        if ($project->image) {
+            Storage::disk('public')->delete($project->image);
+        }
+
+        $project->delete();
+
+        return response()->json([
+            'message' => 'Project deleted successfully.',
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    private function formatArrayInput($value): array
     {
-        //
-    }
+        if (is_array($value)) {
+            return $value;
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return array_map('trim', explode(',', $value));
     }
 }

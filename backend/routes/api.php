@@ -5,13 +5,11 @@ use App\Http\Controllers\Api\PublicController;
 use App\Http\Controllers\Api\Admin\ContactMessageController;
 use App\Http\Controllers\Api\Admin\EducationController;
 use App\Http\Controllers\Api\Admin\ExperienceController;
-use App\Http\Controllers\Api\Admin\PosterProjectController;
 use App\Http\Controllers\Api\Admin\ProfileController;
 use App\Http\Controllers\Api\Admin\ProjectController;
 use App\Http\Controllers\Api\Admin\SkillController;
 use App\Http\Controllers\Api\Admin\UxUiController;
-use App\Http\Controllers\Api\Admin\UxUiProjectController;
-use App\Http\Controllers\Api\PosterController;
+use App\Http\Controllers\Api\Admin\PosterController;
 use Illuminate\Support\Facades\Route;
 
 /*

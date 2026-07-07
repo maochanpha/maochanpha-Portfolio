@@ -11,8 +11,24 @@ function Designs() {
       const uxResponse = await api.get("/ux-ui-projects");
       const posterResponse = await api.get("/poster-projects");
 
-      setUxProjects(uxResponse.data);
-      setPosterProjects(posterResponse.data);
+      console.log("UX/UI public response:", uxResponse.data);
+      console.log("Poster public response:", posterResponse.data);
+
+      if (Array.isArray(uxResponse.data)) {
+        setUxProjects(uxResponse.data);
+      } else if (Array.isArray(uxResponse.data.data)) {
+        setUxProjects(uxResponse.data.data);
+      } else {
+        setUxProjects([]);
+      }
+
+      if (Array.isArray(posterResponse.data)) {
+        setPosterProjects(posterResponse.data);
+      } else if (Array.isArray(posterResponse.data.data)) {
+        setPosterProjects(posterResponse.data.data);
+      } else {
+        setPosterProjects([]);
+      }
     } catch (error) {
       console.log(error);
     } finally {
@@ -63,12 +79,24 @@ function Designs() {
                     {project.description}
                   </p>
 
+                  {Array.isArray(project.tools) &&
+                    project.tools.map((tool, index) => (
+                      <span
+                        className="badge bg-light text-dark me-1 mb-2"
+                        key={index}
+                      >
+                        {tool}
+                      </span>
+                    ))}
+
+                  <br />
+
                   {project.figma_url && (
                     <a
                       href={project.figma_url}
                       target="_blank"
                       rel="noreferrer"
-                      className="btn btn-sm btn-outline-primary"
+                      className="btn btn-sm btn-outline-primary mt-2"
                     >
                       View Figma
                     </a>
@@ -77,6 +105,10 @@ function Designs() {
               </div>
             </div>
           ))}
+
+          {uxProjects.length === 0 && (
+            <p className="text-muted">No UX/UI projects found.</p>
+          )}
         </div>
 
         <h4 className="mb-3">Poster Design Projects</h4>
@@ -105,10 +137,24 @@ function Designs() {
                   <p className="text-muted small">
                     {project.description}
                   </p>
+
+                  {Array.isArray(project.tools) &&
+                    project.tools.map((tool, index) => (
+                      <span
+                        className="badge bg-light text-dark me-1 mb-1"
+                        key={index}
+                      >
+                        {tool}
+                      </span>
+                    ))}
                 </div>
               </div>
             </div>
           ))}
+
+          {posterProjects.length === 0 && (
+            <p className="text-muted">No poster projects found.</p>
+          )}
         </div>
       </div>
     </section>

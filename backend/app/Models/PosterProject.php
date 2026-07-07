@@ -4,19 +4,23 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Poster extends Model
+class PosterProject extends Model
 {
+    protected $table = 'posters';
+
     protected $fillable = [
         'title',
         'slug',
         'description',
-        'image',
         'tools',
+        'image',
         'category',
     ];
+
     protected $casts = [
         'tools' => 'array',
     ];
+
     protected $appends = [
         'image_url',
     ];

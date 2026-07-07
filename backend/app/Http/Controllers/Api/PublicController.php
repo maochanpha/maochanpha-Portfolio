@@ -6,21 +6,20 @@ use App\Http\Controllers\Controller;
 use App\Models\ContactMessage;
 use App\Models\Education;
 use App\Models\Experience;
-use App\Models\Poster;
+use App\Models\PosterProject;
 use App\Models\Profile;
 use App\Models\Project;
 use App\Models\Skill;
-use App\Models\Uxui;
+use App\Models\UxUiProject;
 use Illuminate\Http\Request;
 
 class PublicController extends Controller
 {
     public function profile()
     {
-        $profile = Profile::first();
-
-        return response()->json($profile);
+        return response()->json(Profile::first());
     }
+
     public function skills()
     {
         $skills = Skill::where('is_active', true)
@@ -30,37 +29,43 @@ class PublicController extends Controller
 
         return response()->json($skills);
     }
+
     public function projects()
     {
-        $projects = Project::latest()->get();
+        return response()->json(Project::latest()->get());
+    }
+
+    public function projectDetails($slug)
+    {
+        $project = Project::where('slug', $slug)->firstOrFail();
+
+        return response()->json($project);
+    }
+
+    public function uxUiProjects()
+    {
+        $projects = UxUiProject::latest()->get();
 
         return response()->json($projects);
     }
-    public function projectDetails($slug)
+
+    public function posterProjects()
     {
-        $projects = Project::where('slug', $slug)->firstOrFail();
+        $projects = PosterProject::latest()->get();
+
         return response()->json($projects);
     }
-    public function uxui()
-    {
-        $projects = Uxui::latest()->get();
-        return response()->json($projects);
-    }
-    public function poster()
-    {
-        $projects = Poster::latest()->get();
-        return response()->json($projects);
-    }
+
     public function education()
     {
-        $education = Education::latest()->get();
-        return response()->json($education);
+        return response()->json(Education::latest()->get());
     }
+
     public function experience()
     {
-        $experience = Experience::latest()->get();
-        return response()->json($experience);
+        return response()->json(Experience::latest()->get());
     }
+
     public function storeContactMessage(Request $request)
     {
         $validated = $request->validate([
@@ -69,6 +74,7 @@ class PublicController extends Controller
             'subject' => ['nullable', 'string', 'max:200'],
             'message' => ['required', 'string'],
         ]);
+
         $message = ContactMessage::create($validated);
 
         return response()->json([

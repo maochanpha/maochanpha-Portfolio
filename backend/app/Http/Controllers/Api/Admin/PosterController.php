@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Poster;
+use App\Models\PosterProject;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -15,7 +15,7 @@ class PosterController extends Controller
      */
     public function index()
     {
-        $projects = Poster::latest()->get();
+        $projects = PosterProject::latest()->get();
 
         return response()->json($projects);
     }
@@ -40,10 +40,10 @@ class PosterController extends Controller
         }
 
         if($request->hasFile('image')){
-            $validated['image'] = $request->file('imgae')->store('poster-projects', 'public');
+            $validated['image'] = $request->file('image')->store('poster-projects', 'public');
         }
 
-        $project = Poster::create($validated);
+        $project = PosterProject::create($validated);
 
         return response()->json([
             'message' => 'Poster project created successfully.',
@@ -55,7 +55,7 @@ class PosterController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Poster $poster)
+    public function show(PosterProject $poster)
     {
         return response()->json($poster);
     }
@@ -63,7 +63,7 @@ class PosterController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Poster $poster)
+    public function update(Request $request, PosterProject $poster)
     {
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:200'],
@@ -84,7 +84,7 @@ class PosterController extends Controller
                 Storage::disk('public')->delete($poster->image);
             }
 
-            $validated['image'] = $request->file('image')->store('poster-porjects', 'public');
+            $validated['image'] = $request->file('image')->store('poster-projects', 'public');
         }
         $poster->update($validated);
         return response()->json([
@@ -96,7 +96,7 @@ class PosterController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Poster $poster)
+    public function destroy(PosterProject $poster)
     {
         if($poster->image){
             Storage::disk('public')->delete($poster->image);

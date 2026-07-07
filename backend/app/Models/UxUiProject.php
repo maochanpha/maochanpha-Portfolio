@@ -4,8 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Uxui extends Model
+class UxUiProject extends Model
 {
+    protected $table = 'uxuis';
+
     protected $fillable = [
         'title',
         'slug',
