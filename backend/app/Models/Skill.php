@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Skill extends Model
 {
@@ -14,18 +15,18 @@ class Skill extends Model
         'sort_order',
         'is_active',
     ];
-    protected $cast = [
+    protected $casts = [
         'is_active' => 'boolean',
     ];
     protected $appends = [
         'icon_url',
     ];
-        public function getIconUrlAttribute(): ?string
+    public function getIconUrlAttribute(): ?string
     {
         if (!$this->icon) {
             return null;
         }
 
-        return asset('storage/' . $this->icon);
+        return Storage::disk('public')->url($this->icon);
     }
 }

@@ -55,15 +55,15 @@ class PosterController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(PosterProject $poster)
+    public function show(PosterProject $posterProject)
     {
-        return response()->json($poster);
+        return response()->json($posterProject);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, PosterProject $poster)
+    public function update(Request $request, PosterProject $posterProject)
     {
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:200'],
@@ -73,35 +73,35 @@ class PosterController extends Controller
             'category' => ['nullable', 'string', 'max:100'],
         ]);
 
-        if($request->title !== $poster->title){
+        if($request->title !== $posterProject->title){
             $validated['slug'] = Str::slug($request->title). '-'. time();
         }
         if($request->filled('tools')){
             $validated['tools'] = $this->formatArrayInput($request->tools);
         }
         if($request->hasFile('image')){
-            if($poster->image){
-                Storage::disk('public')->delete($poster->image);
+            if($posterProject->image){
+                Storage::disk('public')->delete($posterProject->image);
             }
 
             $validated['image'] = $request->file('image')->store('poster-projects', 'public');
         }
-        $poster->update($validated);
+        $posterProject->update($validated);
         return response()->json([
             'message' => 'Poster project updated successfully.',
-            'data' => $poster,
+            'data' => $posterProject,
         ]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(PosterProject $poster)
+    public function destroy(PosterProject $posterProject)
     {
-        if($poster->image){
-            Storage::disk('public')->delete($poster->image);
+        if($posterProject->image){
+            Storage::disk('public')->delete($posterProject->image);
         }
-        $poster->delete();
+        $posterProject->delete();
 
         return response()->json([
             'message' => 'Poster project deleted successfully.',

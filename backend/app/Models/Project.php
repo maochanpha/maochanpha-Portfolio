@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Project extends Model
 {
@@ -33,6 +34,6 @@ class Project extends Model
             return null;
         }
 
-        return asset('storage/' . $this->image);
+        return Storage::disk('public')->url($this->image);
     }
 }

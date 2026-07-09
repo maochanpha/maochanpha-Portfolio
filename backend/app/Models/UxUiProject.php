@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class UxUiProject extends Model
 {
@@ -29,7 +30,7 @@ class UxUiProject extends Model
     public function getImageUrlsAttribute(): array
     {
         return collect($this->images ?? [])
-            ->map(fn ($path) => asset('storage/' . $path))
+            ->map(fn ($path) => Storage::disk('public')->url($path))
             ->values()
             ->all();
     }

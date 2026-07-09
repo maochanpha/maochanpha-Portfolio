@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Experience extends Model
 {
@@ -32,6 +33,6 @@ class Experience extends Model
             return null;
         }
 
-        return asset('storage/' . $this->certificate_image);
+        return Storage::disk('public')->url($this->certificate_image);
     }
 }

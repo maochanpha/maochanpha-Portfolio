@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Profile extends Model
 {
@@ -34,7 +35,7 @@ class Profile extends Model
             return null;
         }
 
-        return asset('storage/' . $this->profile_photo);
+        return Storage::disk('public')->url($this->profile_photo);
     }
 
     public function getCvUrlAttribute(): ?string
@@ -43,6 +44,6 @@ class Profile extends Model
             return null;
         }
 
-        return asset('storage/' . $this->cv_file);
+        return Storage::disk('public')->url($this->cv_file);
     }
 }

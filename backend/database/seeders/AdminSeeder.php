@@ -4,12 +4,12 @@ namespace Database\Seeders;
 
 use App\Models\Education;
 use App\Models\Experience;
-use App\Models\Poster;
+use App\Models\PosterProject;
 use App\Models\Profile;
 use App\Models\Project;
 use App\Models\Skill;
 use App\Models\User;
-use App\Models\UxUi;
+use App\Models\UxUiProject;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -95,7 +95,7 @@ class AdminSeeder extends Seeder
             ]
         );
 
-        UxUi::firstOrCreate(
+        UxUiProject::firstOrCreate(
             ['slug' => 'mobile-banking-ui'],
             [
                 'title' => 'Mobile Banking UI Concept',
@@ -105,7 +105,7 @@ class AdminSeeder extends Seeder
             ]
         );
 
-        Poster::firstOrCreate(
+        PosterProject::firstOrCreate(
             ['slug' => 'event-poster-design'],
             [
                 'title' => 'Event Poster Design',
