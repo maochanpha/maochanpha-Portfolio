@@ -27,6 +27,6 @@ class Skill extends Model
             return null;
         }
 
-        return Storage::disk('public')->url($this->icon);
+        return Storage::disk(config('filesystems.default'))->url($this->icon);
     }
 }

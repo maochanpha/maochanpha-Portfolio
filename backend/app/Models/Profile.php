@@ -35,7 +35,7 @@ class Profile extends Model
             return null;
         }
 
-        return Storage::disk('public')->url($this->profile_photo);
+        return Storage::disk(config('filesystems.default'))->url($this->profile_photo);
     }
 
     public function getCvUrlAttribute(): ?string
@@ -44,6 +44,6 @@ class Profile extends Model
             return null;
         }
 
-        return Storage::disk('public')->url($this->cv_file);
+        return Storage::disk(config('filesystems.default'))->url($this->cv_file);
     }
 }

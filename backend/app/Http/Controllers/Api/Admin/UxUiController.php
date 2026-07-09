@@ -38,7 +38,7 @@ class UxUiController extends Controller
             $imagePaths = [];
 
             foreach ($request->file('images') as $image) {
-                $imagePaths[] = $image->store('ux-ui-projects', 'public');
+                $imagePaths[] = $image->store('ux-ui-projects', config('filesystems.default'));
             }
 
             $validated['images'] = $imagePaths;
@@ -79,14 +79,14 @@ class UxUiController extends Controller
         if ($request->hasFile('images')) {
             if ($uxUiProject->images) {
                 foreach ($uxUiProject->images as $oldImage) {
-                    Storage::disk('public')->delete($oldImage);
+                    Storage::disk(config('filesystems.default'))->delete($oldImage);
                 }
             }
 
             $imagePaths = [];
 
             foreach ($request->file('images') as $image) {
-                $imagePaths[] = $image->store('ux-ui-projects', 'public');
+                $imagePaths[] = $image->store('ux-ui-projects', config('filesystems.default'));
             }
 
             $validated['images'] = $imagePaths;
@@ -104,7 +104,7 @@ class UxUiController extends Controller
     {
         if ($uxUiProject->images) {
             foreach ($uxUiProject->images as $image) {
-                Storage::disk('public')->delete($image);
+                Storage::disk(config('filesystems.default'))->delete($image);
             }
         }
 

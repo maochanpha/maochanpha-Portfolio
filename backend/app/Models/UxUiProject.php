@@ -30,7 +30,7 @@ class UxUiProject extends Model
     public function getImageUrlsAttribute(): array
     {
         return collect($this->images ?? [])
-            ->map(fn ($path) => Storage::disk('public')->url($path))
+            ->map(fn ($path) => Storage::disk(config('filesystems.default'))->url($path))
             ->values()
             ->all();
     }

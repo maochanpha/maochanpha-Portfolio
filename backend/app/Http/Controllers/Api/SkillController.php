@@ -32,7 +32,7 @@ class SkillController extends Controller
         ]);
 
         if($request->hasFile('icon')){
-            $validated['icon'] = $request->file('icon')->store('skills', 'public');
+            $validated['icon'] = $request->file('icon')->store('skills', config('filesystems.default'));
         }
 
         $skill = Skill::create($validated);
@@ -66,7 +66,7 @@ class SkillController extends Controller
         ]);
 
         if($request->hasFile('icon')){
-            $validated['icon'] = $request->file('icon')->store('skills', 'public');
+            $validated['icon'] = $request->file('icon')->store('skills', config('filesystems.default'));
         }
 
         $skill->update($validated);

@@ -33,6 +33,6 @@ class Experience extends Model
             return null;
         }
 
-        return Storage::disk('public')->url($this->certificate_image);
+        return Storage::disk(config('filesystems.default'))->url($this->certificate_image);
     }
 }

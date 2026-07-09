@@ -37,7 +37,7 @@ class ProjectController extends Controller
         }
 
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('projects', 'public');
+            $validated['image'] = $request->file('image')->store('projects', config('filesystems.default'));
         }
 
         $project = Project::create($validated);
@@ -76,10 +76,10 @@ class ProjectController extends Controller
 
         if ($request->hasFile('image')) {
             if ($project->image) {
-                Storage::disk('public')->delete($project->image);
+                Storage::disk(config('filesystems.default'))->delete($project->image);
             }
 
-            $validated['image'] = $request->file('image')->store('projects', 'public');
+            $validated['image'] = $request->file('image')->store('projects', config('filesystems.default'));
         }
 
         $project->update($validated);
@@ -93,7 +93,7 @@ class ProjectController extends Controller
     public function destroy(Project $project)
     {
         if ($project->image) {
-            Storage::disk('public')->delete($project->image);
+            Storage::disk(config('filesystems.default'))->delete($project->image);
         }
 
         $project->delete();

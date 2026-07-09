@@ -27,7 +27,7 @@ class SkillController extends Controller
         ]);
         
         if($request->hasFile('icon')){
-            $validated['icon'] = $request->file('icon')->store('skills', 'public');
+            $validated['icon'] = $request->file('icon')->store('skills', config('filesystems.default'));
         }
 
         $skill = Skill::create($validated);
@@ -53,9 +53,9 @@ class SkillController extends Controller
 
         if($request->hasFile('icon')){
             if($skill->icon){
-                Storage::disk('public')->delete($skill->icon);
+                Storage::disk(config('filesystems.default'))->delete($skill->icon);
             }
-            $validated['icon'] = $request->file('icon')->store('skills', 'public');
+            $validated['icon'] = $request->file('icon')->store('skills', config('filesystems.default'));
         }
         $skill->update($validated);
 
@@ -66,7 +66,7 @@ class SkillController extends Controller
     }
     public function destroy(Skill $skill){
         if($skill->icon){
-            Storage::disk('public')->delete($skill->icon);
+            Storage::disk(config('filesystems.default'))->delete($skill->icon);
         }
 
         $skill->delete();

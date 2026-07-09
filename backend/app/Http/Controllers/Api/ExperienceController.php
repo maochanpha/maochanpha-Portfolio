@@ -31,7 +31,7 @@ class ExperienceController extends Controller
         if ($request->hasFile('certificate_image')) {
             $validated['certificate_image'] = $request
                 ->file('certificate_image')
-                ->store('experiences', 'public');
+                ->store('experiences', config('filesystems.default'));
         }
 
         $experience = Experience::create($validated);
@@ -61,12 +61,12 @@ class ExperienceController extends Controller
 
         if ($request->hasFile('certificate_image')) {
             if ($experience->certificate_image) {
-                Storage::disk('public')->delete($experience->certificate_image);
+                Storage::disk(config('filesystems.default'))->delete($experience->certificate_image);
             }
 
             $validated['certificate_image'] = $request
                 ->file('certificate_image')
-                ->store('experiences', 'public');
+                ->store('experiences', config('filesystems.default'));
         }
 
         $experience->update($validated);
@@ -80,7 +80,7 @@ class ExperienceController extends Controller
     public function destroy(Experience $experience)
     {
         if ($experience->certificate_image) {
-            Storage::disk('public')->delete($experience->certificate_image);
+            Storage::disk(config('filesystems.default'))->delete($experience->certificate_image);
         }
 
         $experience->delete();

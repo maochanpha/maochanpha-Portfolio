@@ -34,6 +34,6 @@ class Project extends Model
             return null;
         }
 
-        return Storage::disk('public')->url($this->image);
+        return Storage::disk(config('filesystems.default'))->url($this->image);
     }
 }

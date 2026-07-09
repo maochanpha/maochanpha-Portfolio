@@ -34,7 +34,7 @@ class PosterController extends Controller
         }
 
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('poster-projects', 'public');
+            $validated['image'] = $request->file('image')->store('poster-projects', config('filesystems.default'));
         }
 
         $poster = PosterProject::create($validated);
@@ -70,10 +70,10 @@ class PosterController extends Controller
 
         if ($request->hasFile('image')) {
             if ($posterProject->image) {
-                Storage::disk('public')->delete($posterProject->image);
+                Storage::disk(config('filesystems.default'))->delete($posterProject->image);
             }
 
-            $validated['image'] = $request->file('image')->store('poster-projects', 'public');
+            $validated['image'] = $request->file('image')->store('poster-projects', config('filesystems.default'));
         }
 
         $posterProject->update($validated);
@@ -87,7 +87,7 @@ class PosterController extends Controller
     public function destroy(PosterProject $posterProject)
     {
         if ($posterProject->image) {
-            Storage::disk('public')->delete($posterProject->image);
+            Storage::disk(config('filesystems.default'))->delete($posterProject->image);
         }
 
         $posterProject->delete();

@@ -44,16 +44,16 @@ class ProfileController extends Controller
         ]);
         if($request->hasFile('profile_photo')) {
             if($profile->profile_photo){
-                Storage::disk('public')->delete($profile->profile_photo);
+                Storage::disk(config('filesystems.default'))->delete($profile->profile_photo);
             }
-            $validated['profile_photo'] = $request->file('profile_photo')->store('profiles', 'public');
+            $validated['profile_photo'] = $request->file('profile_photo')->store('profiles', config('filesystems.default'));
         }
         if($request->hasFile('cv_file')){
             if($profile->cv_file){
-                Storage::disk('public')->delete($profile->cv_file);
+                Storage::disk(config('filesystems.default'))->delete($profile->cv_file);
             }
 
-            $validated['cv_file'] = $request->file('cv_file')->store('cv', 'public');
+            $validated['cv_file'] = $request->file('cv_file')->store('cv', config('filesystems.default'));
         }
         $profile->fill($validated);
         $profile->save();
