@@ -7,6 +7,7 @@ use App\Models\Profile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
+use Throwable;
 
 class ProfileController extends Controller
 {
@@ -45,22 +46,45 @@ class ProfileController extends Controller
             'telegram_url' => ['nullable', 'url'],
             'instagram_url' => ['nullable', 'url'],
         ]);
-        if ($request->hasFile('profile_photo')) {
-            $validated['profile_photo'] = $this->storeUpload(
-                $request->file('profile_photo'),
-                'profiles',
-                'profile_photo',
-                $profile->profile_photo,
-            );
-        }
+        try {
+            if ($request->hasFile('profile_photo')) {
+                $validated['profile_photo'] = $this->storeUpload(
+                    $request->file('profile_photo'),
+                    'profiles',
+                    'profile_photo',
+                    $profile->profile_photo,
+                );
+            }
 
-        if ($request->hasFile('cv_file')) {
-            $validated['cv_file'] = $this->storeUpload(
-                $request->file('cv_file'),
-                'cv',
-                'cv_file',
-                $profile->cv_file,
-            );
+            if ($request->hasFile('cv_file')) {
+                $validated['cv_file'] = $this->storeUpload(
+                    $request->file('cv_file'),
+                    'cv',
+                    'cv_file',
+                    $profile->cv_file,
+                );
+            }
+        } catch (ValidationException $exception) {
+            throw $exception;
+        } catch (Throwable $exception) {
+            report($exception);
+
+            $response = [
+                'message' => 'The profile file could not be uploaded.',
+                'errors' => [
+                    'profile_photo' => ['S3 or Supabase storage rejected the upload. Check the storage credentials and bucket permissions.'],
+                ],
+            ];
+
+            if (config('app.debug')) {
+                $response['debug'] = [
+                    'exception' => $exception::class,
+                    'message' => $exception->getMessage(),
+                    'code' => $exception->getCode(),
+                ];
+            }
+
+            return response()->json($response, 422);
         }
 
         $profile->fill($validated);
