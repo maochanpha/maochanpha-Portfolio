@@ -12,58 +12,75 @@ use App\Models\Project;
 use App\Models\Skill;
 use App\Models\UxUiProject;
 use Illuminate\Http\Request;
+use Throwable;
 
 class PublicController extends Controller
 {
     public function profile()
     {
-        return response()->json(Profile::first());
+        return $this->safeJson(
+            fn () => Profile::first(),
+            null,
+        );
     }
 
     public function skills()
     {
-        $skills = Skill::where('is_active', true)
-            ->orderBy('sort_order', 'asc')
-            ->latest()
-            ->get();
-
-        return response()->json($skills);
+        return $this->safeJson(
+            fn () => Skill::where('is_active', true)
+                ->orderBy('sort_order', 'asc')
+                ->latest()
+                ->get(),
+            [],
+        );
     }
 
     public function projects()
     {
-        return response()->json(Project::latest()->get());
+        return $this->safeJson(
+            fn () => Project::latest()->get(),
+            [],
+        );
     }
 
     public function projectDetails($slug)
     {
-        $project = Project::where('slug', $slug)->firstOrFail();
-
-        return response()->json($project);
+        return $this->safeJson(
+            fn () => Project::where('slug', $slug)->first(),
+            null,
+        );
     }
 
     public function uxUiProjects()
     {
-        $projects = UxUiProject::latest()->get();
-
-        return response()->json($projects);
+        return $this->safeJson(
+            fn () => UxUiProject::latest()->get(),
+            [],
+        );
     }
 
     public function posterProjects()
     {
-        $projects = PosterProject::latest()->get();
-
-        return response()->json($projects);
+        return $this->safeJson(
+            fn () => PosterProject::latest()->get(),
+            [],
+        );
     }
 
     public function education()
     {
-        return response()->json(Education::latest()->get());
+        return $this->safeJson(
+            fn () => Education::latest()->get(),
+            [],
+        );
     }
 
     public function experience()
     {
-        return response()->json(Experience::latest()->get());
+        return $this->safeJson(
+            fn () => Experience::latest()->get(),
+            [],
+        );
     }
 
     public function storeContactMessage(Request $request)
@@ -81,5 +98,16 @@ class PublicController extends Controller
             'message' => 'Your message has been sent successfully.',
             'data' => $message,
         ], 201);
+    }
+
+    protected function safeJson(callable $callback, mixed $fallback, int $status = 200)
+    {
+        try {
+            return response()->json($callback(), $status);
+        } catch (Throwable $e) {
+            report($e);
+
+            return response()->json($fallback, $status);
+        }
     }
 }
