@@ -1,9 +1,10 @@
 <?php
 
-$cacheDir = '/tmp/laravel/bootstrap/cache';
-$viewDir = '/tmp/laravel/framework/views';
-$frameworkCacheDir = '/tmp/laravel/framework/cache';
-$sessionDir = '/tmp/laravel/framework/sessions';
+$runtimeBase = '/tmp/laravel';
+$cacheDir = $runtimeBase . '/bootstrap/cache';
+$viewDir = $runtimeBase . '/framework/views';
+$frameworkCacheDir = $runtimeBase . '/framework/cache';
+$sessionDir = $runtimeBase . '/framework/sessions';
 
 foreach ([$cacheDir, $viewDir, $frameworkCacheDir, $sessionDir] as $dir) {
     if (! is_dir($dir)) {
@@ -12,16 +13,20 @@ foreach ([$cacheDir, $viewDir, $frameworkCacheDir, $sessionDir] as $dir) {
 }
 
 $runtimeEnv = [
-    'APP_SERVICES_CACHE' => $cacheDir.'/services.php',
-    'APP_PACKAGES_CACHE' => $cacheDir.'/packages.php',
-    'APP_CONFIG_CACHE' => $cacheDir.'/config.php',
-    'APP_ROUTES_CACHE' => $cacheDir.'/routes-v7.php',
-    'APP_EVENTS_CACHE' => $cacheDir.'/events.php',
+    'APP_SERVICES_CACHE' => $cacheDir . '/services.php',
+    'APP_PACKAGES_CACHE' => $cacheDir . '/packages.php',
+    'APP_CONFIG_CACHE' => $cacheDir . '/config.php',
+    'APP_ROUTES_CACHE' => $cacheDir . '/routes.php',
+    'APP_EVENTS_CACHE' => $cacheDir . '/events.php',
     'VIEW_COMPILED_PATH' => $viewDir,
+    'SESSION_FILES' => $sessionDir,
+    'CACHE_STORE' => 'array',
+    'SESSION_DRIVER' => 'array',
+    'QUEUE_CONNECTION' => 'sync',
 ];
 
 foreach ($runtimeEnv as $key => $value) {
-    putenv($key.'='.$value);
+    putenv($key . '=' . $value);
     $_ENV[$key] = $value;
     $_SERVER[$key] = $value;
 }
