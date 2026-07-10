@@ -7,9 +7,3 @@ Route::get('/', function () {
         'message' => 'Portfolio API is running',
     ]);
 });
-
-Route::fallback(function () {
-    return response()->json([
-        'message' => 'Not Found',
-    ], 404);
-});
