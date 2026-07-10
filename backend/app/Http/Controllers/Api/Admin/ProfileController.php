@@ -6,20 +6,23 @@ use App\Http\Controllers\Controller;
 use App\Models\Profile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
 class ProfileController extends Controller
 {
-    public function show(){
+    public function show()
+    {
         $profile = Profile::first();
 
         return response()->json($profile);
     }
 
-    public function update(Request $request){
+    public function update(Request $request)
+    {
         $profile = Profile::first();
 
-        if(!$profile){
-            $profile = new Profile();
+        if (! $profile) {
+            $profile = new Profile;
         }
 
         $validated = $request->validate([
@@ -42,19 +45,24 @@ class ProfileController extends Controller
             'telegram_url' => ['nullable', 'url'],
             'instagram_url' => ['nullable', 'url'],
         ]);
-        if($request->hasFile('profile_photo')) {
-            if($profile->profile_photo){
-                Storage::disk(config('filesystems.default'))->delete($profile->profile_photo);
-            }
-            $validated['profile_photo'] = $request->file('profile_photo')->store('profiles', config('filesystems.default'));
+        if ($request->hasFile('profile_photo')) {
+            $validated['profile_photo'] = $this->storeUpload(
+                $request->file('profile_photo'),
+                'profiles',
+                'profile_photo',
+                $profile->profile_photo,
+            );
         }
-        if($request->hasFile('cv_file')){
-            if($profile->cv_file){
-                Storage::disk(config('filesystems.default'))->delete($profile->cv_file);
-            }
 
-            $validated['cv_file'] = $request->file('cv_file')->store('cv', config('filesystems.default'));
+        if ($request->hasFile('cv_file')) {
+            $validated['cv_file'] = $this->storeUpload(
+                $request->file('cv_file'),
+                'cv',
+                'cv_file',
+                $profile->cv_file,
+            );
         }
+
         $profile->fill($validated);
         $profile->save();
 
@@ -62,5 +70,31 @@ class ProfileController extends Controller
             'message' => 'Profile updated successfully.',
             'data' => $profile,
         ]);
+    }
+
+    private function storeUpload($file, string $directory, string $field, ?string $oldPath): string
+    {
+        $diskName = (string) config('filesystems.default');
+        $disk = Storage::disk($diskName);
+
+        if (config("filesystems.disks.{$diskName}.driver") !== 's3') {
+            throw ValidationException::withMessages([
+                $field => ['Uploads must use the configured S3 or Supabase storage disk.'],
+            ]);
+        }
+
+        $path = $file->store($directory, $diskName);
+
+        if (! is_string($path) || $path === '') {
+            throw ValidationException::withMessages([
+                $field => ['The file could not be uploaded to S3 or Supabase storage. Check the storage credentials and bucket permissions.'],
+            ]);
+        }
+
+        if ($oldPath && $oldPath !== '0') {
+            $disk->delete($oldPath);
+        }
+
+        return $path;
     }
 }
