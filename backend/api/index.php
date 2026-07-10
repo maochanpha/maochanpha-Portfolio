@@ -1,7 +1,5 @@
 <?php
 
-define('LARAVEL_START', microtime(true));
-
 if (isset($_GET['__vercel_route'])) {
     $route = trim((string) $_GET['__vercel_route'], '/');
     $query = $_GET;
