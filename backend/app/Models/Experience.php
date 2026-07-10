@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\ResolvesStorageUrls;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 
 class Experience extends Model
 {
+    use ResolvesStorageUrls;
+
     protected $fillable = [
         'organization',
         'role',
@@ -29,10 +31,6 @@ class Experience extends Model
 
     public function getCertificateImageUrlAttribute(): ?string
     {
-        if (!$this->certificate_image) {
-            return null;
-        }
-
-        return Storage::disk(config('filesystems.default'))->url($this->certificate_image);
+        return $this->storageUrl($this->certificate_image);
     }
 }

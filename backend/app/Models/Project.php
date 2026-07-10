@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\ResolvesStorageUrls;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 
 class Project extends Model
 {
+    use ResolvesStorageUrls;
+
     protected $fillable = [
         'title',
         'slug',
@@ -30,10 +32,6 @@ class Project extends Model
 
     public function getImageUrlAttribute(): ?string
     {
-        if (!$this->image) {
-            return null;
-        }
-
-        return Storage::disk(config('filesystems.default'))->url($this->image);
+        return $this->storageUrl($this->image);
     }
 }

@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\ResolvesStorageUrls;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 
 class Profile extends Model
 {
+    use ResolvesStorageUrls;
+
     protected $fillable = [
         'name',
         'title',
@@ -31,19 +33,11 @@ class Profile extends Model
 
     public function getProfilePhotoUrlAttribute(): ?string
     {
-        if (!$this->profile_photo) {
-            return null;
-        }
-
-        return Storage::disk(config('filesystems.default'))->url($this->profile_photo);
+        return $this->storageUrl($this->profile_photo);
     }
 
     public function getCvUrlAttribute(): ?string
     {
-        if (!$this->cv_file) {
-            return null;
-        }
-
-        return Storage::disk(config('filesystems.default'))->url($this->cv_file);
+        return $this->storageUrl($this->cv_file);
     }
 }

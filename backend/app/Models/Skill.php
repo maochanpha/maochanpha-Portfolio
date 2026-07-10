@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\ResolvesStorageUrls;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 
 class Skill extends Model
 {
+    use ResolvesStorageUrls;
+
     protected $fillable = [
         'name',
         'category',
@@ -23,10 +25,6 @@ class Skill extends Model
     ];
     public function getIconUrlAttribute(): ?string
     {
-        if (!$this->icon) {
-            return null;
-        }
-
-        return Storage::disk(config('filesystems.default'))->url($this->icon);
+        return $this->storageUrl($this->icon);
     }
 }

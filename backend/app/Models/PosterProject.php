@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\ResolvesStorageUrls;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 
 class PosterProject extends Model
 {
+    use ResolvesStorageUrls;
+
     protected $table = 'posters';
 
     protected $fillable = [
@@ -28,10 +30,6 @@ class PosterProject extends Model
 
     public function getImageUrlAttribute(): ?string
     {
-        if (!$this->image) {
-            return null;
-        }
-
-        return Storage::disk(config('filesystems.default'))->url($this->image);
+        return $this->storageUrl($this->image);
     }
 }

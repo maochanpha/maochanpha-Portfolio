@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\ResolvesStorageUrls;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 
 class UxUiProject extends Model
 {
+    use ResolvesStorageUrls;
+
     protected $table = 'uxuis';
 
     protected $fillable = [
@@ -29,9 +31,6 @@ class UxUiProject extends Model
 
     public function getImageUrlsAttribute(): array
     {
-        return collect($this->images ?? [])
-            ->map(fn ($path) => Storage::disk(config('filesystems.default'))->url($path))
-            ->values()
-            ->all();
+        return $this->storageUrls($this->images ?? []);
     }
 }
