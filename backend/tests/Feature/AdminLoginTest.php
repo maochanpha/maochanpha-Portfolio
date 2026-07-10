@@ -51,6 +51,8 @@ class AdminLoginTest extends TestCase
 
     public function test_missing_sanctum_table_returns_a_clear_json_error(): void
     {
+        config(['app.debug' => false]);
+
         User::where('email', 'admin@example.com')->firstOrFail();
 
         Schema::drop('personal_access_tokens');
@@ -60,10 +62,31 @@ class AdminLoginTest extends TestCase
             'password' => 'password123',
         ])
             ->assertServiceUnavailable()
+            ->assertJsonMissingPath('debug')
             ->assertJsonPath(
                 'message',
                 'Token service is unavailable. Verify that the personal_access_tokens migration has run.',
             );
+    }
+
+    public function test_debug_mode_includes_the_token_exception_details(): void
+    {
+        config(['app.debug' => true]);
+
+        User::where('email', 'admin@example.com')->firstOrFail();
+        Schema::drop('personal_access_tokens');
+
+        $this->postJson('/api/admin/login', [
+            'email' => 'admin@example.com',
+            'password' => 'password123',
+        ])
+            ->assertServiceUnavailable()
+            ->assertJsonPath('debug.exception', 'Illuminate\\Database\\QueryException')
+            ->assertJsonPath('debug.sql_state', 'HY000')
+            ->assertJsonStructure([
+                'message',
+                'debug' => ['exception', 'message', 'code', 'sql_state', 'driver_code'],
+            ]);
     }
 
     public function test_login_validation_errors_are_json(): void

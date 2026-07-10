@@ -8,6 +8,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class AuthController extends Controller
 {
@@ -20,14 +21,15 @@ class AuthController extends Controller
 
         try {
             $user = User::where('email', $credentials['email'])->first();
-        } catch (QueryException $exception) {
+        } catch (Throwable $exception) {
             Log::error('Admin login could not query the users table.', [
                 'exception' => $exception,
             ]);
 
-            return response()->json([
-                'message' => 'Authentication service is unavailable. Verify the database connection and run the migrations.',
-            ], 503);
+            return $this->serviceUnavailableResponse(
+                'Authentication service is unavailable. Verify the database connection and run the migrations.',
+                $exception,
+            );
         }
 
         if (! $user || ! Hash::check($credentials['password'], $user->password)) {
@@ -41,15 +43,16 @@ class AuthController extends Controller
 
         try {
             $token = $user->createToken('admin-token')->plainTextToken;
-        } catch (QueryException $exception) {
+        } catch (Throwable $exception) {
             Log::error('Admin login could not create a Sanctum token.', [
                 'user_id' => $user->getKey(),
                 'exception' => $exception,
             ]);
 
-            return response()->json([
-                'message' => 'Token service is unavailable. Verify that the personal_access_tokens migration has run.',
-            ], 503);
+            return $this->serviceUnavailableResponse(
+                'Token service is unavailable. Verify that the personal_access_tokens migration has run.',
+                $exception,
+            );
         }
 
         return response()->json([
@@ -73,5 +76,25 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'Logout successfully',
         ]);
+    }
+
+    private function serviceUnavailableResponse(string $message, Throwable $exception)
+    {
+        $response = ['message' => $message];
+
+        if (config('app.debug')) {
+            $response['debug'] = [
+                'exception' => $exception::class,
+                'message' => $exception->getMessage(),
+                'code' => $exception->getCode(),
+            ];
+
+            if ($exception instanceof QueryException) {
+                $response['debug']['sql_state'] = $exception->errorInfo[0] ?? null;
+                $response['debug']['driver_code'] = $exception->errorInfo[1] ?? null;
+            }
+        }
+
+        return response()->json($response, 503);
     }
 }
