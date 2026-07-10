@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../../api/axios";
+import axios from "axios";
+
+const API_URL = import.meta.env.VITE_API_URL?.replace(/\/+$/, "");
 
 function Login() {
   const navigate = useNavigate();
@@ -29,7 +31,15 @@ function Login() {
     setError("");
 
     try {
-      const response = await api.post("/admin/login", form);
+      if (!API_URL) {
+        throw new Error("VITE_API_URL is not configured.");
+      }
+
+      const response = await axios.post(`${API_URL}/admin/login`, form, {
+        headers: {
+          Accept: "application/json",
+        },
+      });
 
       localStorage.setItem("admin_token", response.data.token);
       localStorage.setItem("admin_user", JSON.stringify(response.data.user));
@@ -40,7 +50,9 @@ function Login() {
         console.error("Admin login failed:", error);
       }
 
-      if (!error.response) {
+      if (error.message === "VITE_API_URL is not configured.") {
+        setError("Frontend API URL is not configured. Please redeploy the frontend.");
+      } else if (!error.response) {
         setError("Cannot connect to Laravel API. Please check your network connection.");
       } else if ([401, 422].includes(error.response.status)) {
         setError("Invalid email or password.");
