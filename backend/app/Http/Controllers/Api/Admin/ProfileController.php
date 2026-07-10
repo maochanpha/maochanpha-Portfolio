@@ -88,7 +88,29 @@ class ProfileController extends Controller
         }
 
         $profile->fill($validated);
-        $profile->save();
+
+        try {
+            $profile->save();
+        } catch (Throwable $exception) {
+            report($exception);
+
+            $response = [
+                'message' => 'The profile could not be saved.',
+                'errors' => [
+                    'profile' => ['The database rejected the profile update. Verify that all profile migrations have run.'],
+                ],
+            ];
+
+            if (config('app.debug')) {
+                $response['debug'] = [
+                    'exception' => $exception::class,
+                    'message' => $exception->getMessage(),
+                    'code' => $exception->getCode(),
+                ];
+            }
+
+            return response()->json($response, 500);
+        }
 
         return response()->json([
             'message' => 'Profile updated successfully.',

@@ -57,6 +57,31 @@ class ProfileImageTest extends TestCase
             ->assertInvalid(['profile_photo']);
     }
 
+    public function test_profile_can_save_nullable_fields_and_long_social_urls_without_a_file(): void
+    {
+        Sanctum::actingAs(User::where('email', 'admin@example.com')->firstOrFail());
+
+        $longUrl = 'https://example.com/'.str_repeat('profile-segment/', 20);
+
+        $this->post('/api/admin/profile', [
+            'name' => 'Mao ChanPha',
+            'phone' => '',
+            'location' => '',
+            'linkedin_url' => $longUrl,
+            'profile_photo' => null,
+            'cv_file' => null,
+        ])
+            ->assertOk()
+            ->assertJsonPath('data.phone', null)
+            ->assertJsonPath('data.location', null)
+            ->assertJsonPath('data.linkedin_url', $longUrl);
+
+        $this->assertDatabaseHas('profiles', [
+            'name' => 'Mao ChanPha',
+            'linkedin_url' => $longUrl,
+        ]);
+    }
+
     private function fakePng(): UploadedFile
     {
         return UploadedFile::fake()->createWithContent(
