@@ -24,13 +24,13 @@ function PosterAdmin() {
 
       console.log("Poster API response:", response.data);
 
-      if (Array.isArray(response.data)) {
-        setPosters(response.data);
-      } else if (Array.isArray(response.data.data)) {
-        setPosters(response.data.data);
-      } else {
-        setPosters([]);
-      }
+      const list = Array.isArray(response.data)
+        ? response.data
+        : Array.isArray(response.data?.data)
+          ? response.data.data
+          : [];
+
+      setPosters(list);
     } catch (error) {
       console.log(error);
       alert("Failed to load poster projects.");
@@ -306,7 +306,7 @@ function PosterAdmin() {
               </thead>
 
               <tbody>
-                {posters.map((poster) => (
+                {Array.isArray(posters) && posters.map((poster) => (
                   <tr key={poster.id}>
                     <td>
                       {poster.image_url ? (

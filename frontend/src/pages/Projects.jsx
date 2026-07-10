@@ -10,7 +10,13 @@ function Projects() {
   const getProjects = async () => {
     try {
       const response = await api.get("/projects");
-      setProjects(response.data);
+      const list = Array.isArray(response.data)
+        ? response.data
+        : Array.isArray(response.data?.data)
+          ? response.data.data
+          : [];
+
+      setProjects(list);
     } catch (error) {
       console.log(error);
     } finally {
@@ -22,7 +28,14 @@ function Projects() {
     getProjects();
   }, []);
 
-  const categories = ["All", ...new Set(projects.map((p) => p.category).filter(Boolean))];
+  const categories = [
+    "All",
+    ...new Set(
+      (Array.isArray(projects) ? projects : [])
+        .map((project) => project.category)
+        .filter(Boolean),
+    ),
+  ];
 
   const filteredProjects =
     selectedCategory === "All"
@@ -42,7 +55,7 @@ function Projects() {
         </div>
 
         <div className="text-center mb-4">
-          {categories.map((category) => (
+          {Array.isArray(categories) && categories.map((category) => (
             <button
               key={category}
               className={`btn btn-sm me-2 mb-2 ${
@@ -56,7 +69,7 @@ function Projects() {
         </div>
 
         <div className="row g-4">
-          {filteredProjects.map((project) => (
+          {Array.isArray(filteredProjects) && filteredProjects.map((project) => (
             <div className="col-md-4" key={project.id}>
               <div className="card project-card h-100">
                 {project.image_url ? (

@@ -15,8 +15,19 @@ function Home() {
       const skillResponse = await api.get("/skills");
 
       setProfile(profileResponse.data);
-      setProjects(projectResponse.data.slice(0, 3));
-      setSkills(skillResponse.data);
+      const projectList = Array.isArray(projectResponse.data)
+        ? projectResponse.data
+        : Array.isArray(projectResponse.data?.data)
+          ? projectResponse.data.data
+          : [];
+      const skillList = Array.isArray(skillResponse.data)
+        ? skillResponse.data
+        : Array.isArray(skillResponse.data?.data)
+          ? skillResponse.data.data
+          : [];
+
+      setProjects(projectList.slice(0, 3));
+      setSkills(skillList);
     } catch (error) {
       console.log(error);
     } finally {
@@ -154,7 +165,7 @@ function Home() {
           </div>
 
           <div className="row g-4">
-            {projects.map((project) => (
+            {Array.isArray(projects) && projects.map((project) => (
               <div className="col-md-4" key={project.id}>
                 <div className="card project-card h-100">
                   {project.image_url ? (

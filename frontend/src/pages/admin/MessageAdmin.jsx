@@ -10,13 +10,13 @@ function MessagesAdmin() {
     try {
       const response = await api.get("/admin/contact-messages");
 
-      if (Array.isArray(response.data)) {
-        setMessages(response.data);
-      } else if (Array.isArray(response.data.data)) {
-        setMessages(response.data.data);
-      } else {
-        setMessages([]);
-      }
+      const list = Array.isArray(response.data)
+        ? response.data
+        : Array.isArray(response.data?.data)
+          ? response.data.data
+          : [];
+
+      setMessages(list);
     } catch (error) {
       console.log(error);
       alert("Failed to load contact messages.");
@@ -97,7 +97,7 @@ function MessagesAdmin() {
               </thead>
 
               <tbody>
-                {messages.map((message) => (
+                {Array.isArray(messages) && messages.map((message) => (
                   <tr key={message.id}>
                     <td>
                       <strong>{message.name}</strong>

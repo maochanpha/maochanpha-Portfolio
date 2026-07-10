@@ -23,13 +23,13 @@ function EducationAdmin() {
         try {
             const response = await api.get("/admin/education");
 
-            if (Array.isArray(response.data)) {
-                setEducation(response.data);
-            } else if (Array.isArray(response.data.data)) {
-                setEducation(response.data.data);
-            } else {
-                setEducation([]);
-            }
+            const list = Array.isArray(response.data)
+                ? response.data
+                : Array.isArray(response.data?.data)
+                    ? response.data.data
+                    : [];
+
+            setEducation(list);
         } catch (error) {
             console.log(error);
             alert("Failed to load education.");
@@ -301,7 +301,7 @@ function EducationAdmin() {
                             </thead>
 
                             <tbody>
-                                {education.map((item) => (
+                                {Array.isArray(education) && education.map((item) => (
                                     <tr key={item.id}>
                                         <td>
                                             <strong>{item.institution}</strong>

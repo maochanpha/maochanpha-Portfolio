@@ -22,7 +22,13 @@ function SkillsAdmin() {
   const getSkills = async () => {
     try {
       const response = await api.get("/admin/skills");
-      setSkills(response.data);
+      const list = Array.isArray(response.data)
+        ? response.data
+        : Array.isArray(response.data?.data)
+          ? response.data.data
+          : [];
+
+      setSkills(list);
     } catch (error) {
       console.log(error);
       alert("Failed to load skills.");
@@ -317,7 +323,7 @@ function SkillsAdmin() {
               </thead>
 
               <tbody>
-                {skills.map((skill) => (
+                {Array.isArray(skills) && skills.map((skill) => (
                   <tr key={skill.id}>
                     <td>
                       {skill.icon_url ? (

@@ -14,21 +14,19 @@ function Designs() {
       console.log("UX/UI public response:", uxResponse.data);
       console.log("Poster public response:", posterResponse.data);
 
-      if (Array.isArray(uxResponse.data)) {
-        setUxProjects(uxResponse.data);
-      } else if (Array.isArray(uxResponse.data.data)) {
-        setUxProjects(uxResponse.data.data);
-      } else {
-        setUxProjects([]);
-      }
+      const uxList = Array.isArray(uxResponse.data)
+        ? uxResponse.data
+        : Array.isArray(uxResponse.data?.data)
+          ? uxResponse.data.data
+          : [];
+      const posterList = Array.isArray(posterResponse.data)
+        ? posterResponse.data
+        : Array.isArray(posterResponse.data?.data)
+          ? posterResponse.data.data
+          : [];
 
-      if (Array.isArray(posterResponse.data)) {
-        setPosterProjects(posterResponse.data);
-      } else if (Array.isArray(posterResponse.data.data)) {
-        setPosterProjects(posterResponse.data.data);
-      } else {
-        setPosterProjects([]);
-      }
+      setUxProjects(uxList);
+      setPosterProjects(posterList);
     } catch (error) {
       console.log(error);
     } finally {
@@ -55,7 +53,7 @@ function Designs() {
         <h4 className="mb-3">UX/UI Projects</h4>
 
         <div className="row g-4 mb-5">
-          {uxProjects.map((project) => (
+          {Array.isArray(uxProjects) && uxProjects.map((project) => (
             <div className="col-md-4" key={project.id}>
               <div className="card design-card h-100">
                 {project.image_urls && project.image_urls.length > 0 ? (
@@ -114,7 +112,7 @@ function Designs() {
         <h4 className="mb-3">Poster Design Projects</h4>
 
         <div className="row g-4">
-          {posterProjects.map((project) => (
+          {Array.isArray(posterProjects) && posterProjects.map((project) => (
             <div className="col-md-4" key={project.id}>
               <div className="card design-card h-100">
                 {project.image_url ? (

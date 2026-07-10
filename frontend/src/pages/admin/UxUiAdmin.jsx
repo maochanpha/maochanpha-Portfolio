@@ -25,13 +25,13 @@ function UxUiAdmin() {
 
             console.log("UX/UI API response:", response.data);
 
-            if (Array.isArray(response.data)) {
-                setProjects(response.data);
-            } else if (Array.isArray(response.data.data)) {
-                setProjects(response.data.data);
-            } else {
-                setProjects([]);
-            }
+            const list = Array.isArray(response.data)
+                ? response.data
+                : Array.isArray(response.data?.data)
+                    ? response.data.data
+                    : [];
+
+            setProjects(list);
         } catch (error) {
             console.log(error);
             alert("Failed to load UX/UI projects.");
@@ -280,7 +280,7 @@ function UxUiAdmin() {
                                 <p className="mb-2">Preview:</p>
 
                                 <div className="admin-preview-grid">
-                                    {previews.map((preview, index) => (
+                                    {Array.isArray(previews) && previews.map((preview, index) => (
                                         <img
                                             key={index}
                                             src={preview}
@@ -333,7 +333,7 @@ function UxUiAdmin() {
                             </thead>
 
                             <tbody>
-                                {projects.map((project) => (
+                                {Array.isArray(projects) && projects.map((project) => (
                                     <tr key={project.id}>
                                         <td>
                                             {project.image_urls && project.image_urls.length > 0 ? (

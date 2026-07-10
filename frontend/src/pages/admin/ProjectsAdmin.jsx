@@ -24,7 +24,13 @@ function ProjectsAdmin() {
   const getProjects = async () => {
     try {
       const response = await api.get("/admin/projects");
-      setProjects(response.data);
+      const list = Array.isArray(response.data)
+        ? response.data
+        : Array.isArray(response.data?.data)
+          ? response.data.data
+          : [];
+
+      setProjects(list);
     } catch (error) {
       console.log(error);
       alert("Failed to load projects.");
@@ -353,7 +359,7 @@ function ProjectsAdmin() {
               </thead>
 
               <tbody>
-                {projects.map((project) => (
+                {Array.isArray(projects) && projects.map((project) => (
                   <tr key={project.id}>
                     <td>
                       {project.image_url ? (

@@ -24,13 +24,13 @@ function ExperienceAdmin() {
     try {
       const response = await api.get("/admin/experience");
 
-      if (Array.isArray(response.data)) {
-        setExperiences(response.data);
-      } else if (Array.isArray(response.data.data)) {
-        setExperiences(response.data.data);
-      } else {
-        setExperiences([]);
-      }
+      const list = Array.isArray(response.data)
+        ? response.data
+        : Array.isArray(response.data?.data)
+          ? response.data.data
+          : [];
+
+      setExperiences(list);
     } catch (error) {
       console.log(error);
       alert("Failed to load experience.");
@@ -342,7 +342,7 @@ function ExperienceAdmin() {
               </thead>
 
               <tbody>
-                {experiences.map((item) => (
+                {Array.isArray(experiences) && experiences.map((item) => (
                   <tr key={item.id}>
                     <td>
                       {item.certificate_image_url ? (

@@ -10,8 +10,19 @@ function EducationExperience() {
       const educationResponse = await api.get("/education");
       const experienceResponse = await api.get("/experience");
 
-      setEducation(educationResponse.data);
-      setExperience(experienceResponse.data);
+      const educationList = Array.isArray(educationResponse.data)
+        ? educationResponse.data
+        : Array.isArray(educationResponse.data?.data)
+          ? educationResponse.data.data
+          : [];
+      const experienceList = Array.isArray(experienceResponse.data)
+        ? experienceResponse.data
+        : Array.isArray(experienceResponse.data?.data)
+          ? experienceResponse.data.data
+          : [];
+
+      setEducation(educationList);
+      setExperience(experienceList);
     } catch (error) {
       console.log(error);
     }
@@ -33,7 +44,7 @@ function EducationExperience() {
           <div className="col-lg-6">
             <h4 className="mb-4">Education</h4>
 
-            {education.map((item) => (
+            {Array.isArray(education) && education.map((item) => (
               <div className="timeline-card" key={item.id}>
                 <h5>{item.institution}</h5>
 
@@ -53,7 +64,7 @@ function EducationExperience() {
           <div className="col-lg-6">
             <h4 className="mb-4">Experience / Volunteer</h4>
 
-            {experience.map((item) => (
+            {Array.isArray(experience) && experience.map((item) => (
               <div className="timeline-card" key={item.id}>
                 <h5>{item.organization}</h5>
 

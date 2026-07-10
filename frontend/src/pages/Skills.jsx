@@ -8,7 +8,13 @@ function Skills() {
   const getSkills = async () => {
     try {
       const response = await api.get("/skills");
-      setSkills(response.data);
+      const list = Array.isArray(response.data)
+        ? response.data
+        : Array.isArray(response.data?.data)
+          ? response.data.data
+          : [];
+
+      setSkills(list);
     } catch (error) {
       console.log(error);
     } finally {
@@ -20,7 +26,11 @@ function Skills() {
     getSkills();
   }, []);
 
-  const categories = [...new Set(skills.map((skill) => skill.category))];
+  const categories = [
+    ...new Set(
+      (Array.isArray(skills) ? skills : []).map((skill) => skill.category),
+    ),
+  ];
 
   if (loading) {
     return <div className="container py-5">Loading skills...</div>;
@@ -34,12 +44,12 @@ function Skills() {
           <p>Technical skills and design tools</p>
         </div>
 
-        {categories.map((category) => (
+        {Array.isArray(categories) && categories.map((category) => (
           <div className="mb-5" key={category}>
             <h4 className="mb-3">{category}</h4>
 
             <div className="row g-4">
-              {skills
+              {Array.isArray(skills) && skills
                 .filter((skill) => skill.category === category)
                 .map((skill) => (
                   <div className="col-md-4" key={skill.id}>
