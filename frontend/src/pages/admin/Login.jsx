@@ -36,12 +36,21 @@ function Login() {
 
       navigate("/admin/dashboard");
     } catch (error) {
-      console.log(error);
+      if (import.meta.env.DEV) {
+        console.error("Admin login failed:", error);
+      }
 
-      if (error.response?.status === 422) {
+      if (!error.response) {
+        setError("Cannot connect to Laravel API. Please check your network connection.");
+      } else if ([401, 422].includes(error.response.status)) {
         setError("Invalid email or password.");
       } else {
-        setError("Cannot connect to Laravel API. Please check backend server.");
+        const apiMessage = error.response.data?.message;
+        setError(
+          apiMessage && apiMessage !== "Server Error"
+            ? apiMessage
+            : `Laravel API returned a server error (HTTP ${error.response.status}).`,
+        );
       }
     } finally {
       setLoading(false);
