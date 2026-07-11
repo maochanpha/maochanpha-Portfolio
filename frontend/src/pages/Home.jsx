@@ -194,8 +194,8 @@ function Home() {
         <div className="container contact-panel reveal-card">
           <div><p className="eyebrow"><span></span> Get in touch</p><h2>Have a project in mind?<br /><em>Let’s talk.</em></h2><p>I’m open to internships, collaborations, and interesting development projects.</p></div>
           <div className="contact-methods">
-            <a href={`mailto:${profile?.email || ""}`}><small>Email</small><strong>{profile?.email || "Let’s connect"}</strong><span>↗</span></a>
-            <a href={profile?.telegram_url || `tel:${profile?.phone || ""}`}><small>Phone / Telegram</small><strong>{profile?.phone || "Message me"}</strong><span>↗</span></a>
+            <a href={`mailto:${profile?.email || ""}`}><small>Email</small><strong>{profile?.email || "Let’s connect"}</strong><span></span></a>
+            <a href={profile?.telegram_url || `tel:${profile?.phone || ""}`}><small>Phone / Telegram</small><strong>{profile?.phone || "Message me"}</strong><span></span></a>
             <div><small>Location</small><strong>{profile?.location || "Phnom Penh, Cambodia"}</strong></div>
           </div>
         </div>
