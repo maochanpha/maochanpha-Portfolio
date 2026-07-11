@@ -35,7 +35,7 @@ function PublicNavbar() {
           {cvUrl ? (
             <a className="nav-cv" href={cvUrl} target="_blank" rel="noreferrer">Download CV <span></span></a>
           ) : (
-            <Link className="nav-cv" to="/#contact">Contact Me <span>↗</span></Link>
+            <Link className="nav-cv" to="/#contact">Contact Me <span></span></Link>
           )}
         </div>
       </div>

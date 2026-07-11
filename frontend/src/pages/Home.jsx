@@ -82,7 +82,7 @@ function Home() {
               <div className="hero-cta">
                 <a href="#projects" className="btn btn-accent">View My Work <span></span></a>
                 <a href="#contact" className="btn btn-dark-soft">Contact Me</a>
-                {profile?.cv_url && <a href={profile.cv_url} target="_blank" rel="noreferrer" className="btn btn-link-dark">Download CV ↓</a>}
+                {profile?.cv_url && <a href={profile.cv_url} target="_blank" rel="noreferrer" className="btn btn-link-dark">Download CV <span></span></a>}
               </div>
               <div className="landing-socials" aria-label="Social links">
                 {profile?.github_url && <a href={profile.github_url} target="_blank" rel="noreferrer">GitHub</a>}
