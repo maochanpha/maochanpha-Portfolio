@@ -80,7 +80,7 @@ function Home() {
                 {profile?.short_bio || "I build thoughtful, responsive digital experiences with modern web technologies and clean design."}
               </p>
               <div className="hero-cta">
-                <a href="#projects" className="btn btn-accent">View My Work <span>↗</span></a>
+                <a href="#projects" className="btn btn-accent">View My Work <span></span></a>
                 <a href="#contact" className="btn btn-dark-soft">Contact Me</a>
                 {profile?.cv_url && <a href={profile.cv_url} target="_blank" rel="noreferrer" className="btn btn-link-dark">Download CV ↓</a>}
               </div>
