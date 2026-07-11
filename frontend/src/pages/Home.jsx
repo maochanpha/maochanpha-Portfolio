@@ -47,8 +47,8 @@ function Home() {
     <>
       <section className="hero-section">
         <div className="container">
-          <div className="row align-items-center g-5">
-            <div className="col-lg-7">
+          <div className="row align-items-center hero-row">
+            <div className="col-lg-7 hero-content">
               <div className="hero-badge">
                 <span className="hero-badge-dot"></span>
                 Available for Internship / Junior Developer
@@ -138,7 +138,7 @@ function Home() {
               </div>
             </div>
 
-            <div className="col-lg-5 text-center">
+            <div className="col-lg-5 text-center hero-visual">
               <div className="hero-image-wrapper">
                 {profile?.profile_photo_url ? (
                   <img

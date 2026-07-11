@@ -72,7 +72,7 @@ function Contact() {
 
         <div className="row g-4">
           <div className="col-lg-5">
-            <div className="card border-0 shadow-sm h-100">
+            <div className="card border-0 shadow-sm h-100 contact-card">
               <div className="card-body p-4">
                 <h4>Contact Information</h4>
 
@@ -108,7 +108,7 @@ function Contact() {
           </div>
 
           <div className="col-lg-7">
-            <div className="card border-0 shadow-sm">
+            <div className="card border-0 shadow-sm contact-card">
               <div className="card-body p-4">
                 {success && <div className="alert alert-success">{success}</div>}
                 {error && <div className="alert alert-danger">{error}</div>}
