@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\UxUiProject;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Throwable;
 
 class UxUiController extends Controller
 {
@@ -102,13 +104,23 @@ class UxUiController extends Controller
 
     public function destroy(UxUiProject $uxUiProject)
     {
-        if ($uxUiProject->images) {
-            foreach ($uxUiProject->images as $image) {
-                Storage::disk(config('filesystems.default'))->delete($image);
-            }
-        }
+        $images = $uxUiProject->images ?? [];
 
         $uxUiProject->delete();
+
+        // A missing file or temporary remote-storage failure must not prevent the
+        // project itself from being deleted. The orphan can be cleaned up later.
+        if ($images !== []) {
+            try {
+                Storage::disk(config('filesystems.default'))->delete($images);
+            } catch (Throwable $exception) {
+                Log::warning('UX/UI project deleted but image cleanup failed.', [
+                    'project_id' => $uxUiProject->getKey(),
+                    'images' => $images,
+                    'exception' => $exception->getMessage(),
+                ]);
+            }
+        }
 
         return response()->json([
             'message' => 'UX/UI project deleted successfully.',

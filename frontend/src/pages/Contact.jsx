@@ -55,7 +55,7 @@ function Contact() {
         subject: "",
         message: "",
       });
-    } catch (error) {
+    } catch {
       setError("Failed to send message. Please check your form.");
     } finally {
       setLoading(false);

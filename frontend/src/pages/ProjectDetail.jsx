@@ -8,19 +8,30 @@ function ProjectDetail() {
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const getProject = async () => {
-    try {
-      const response = await api.get(`/projects/${slug}`);
-      setProject(response.data);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    let active = true;
+
+    const getProject = async () => {
+      try {
+        const response = await api.get(`/projects/${slug}`);
+
+        if (active) {
+          setProject(response.data);
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        if (active) {
+          setLoading(false);
+        }
+      }
+    };
+
     getProject();
+
+    return () => {
+      active = false;
+    };
   }, [slug]);
 
   if (loading) {
