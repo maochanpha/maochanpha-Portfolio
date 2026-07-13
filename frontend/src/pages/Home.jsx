@@ -9,6 +9,27 @@ const asList = (response) =>
       ? response.data.data
       : [];
 
+const formatDate = (dateString) => {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+  });
+};
+
+const formatDateRange = (startDate, endDate) => {
+  const start = formatDate(startDate);
+  const end = formatDate(endDate);
+
+  if (!start && !end) return "";
+  if (start && !end) return start;
+  if (start === end) return start;
+
+  return `${start} — ${end}`;
+};
+
 function Home() {
   const [data, setData] = useState({
     profile: null,
@@ -184,7 +205,24 @@ function Home() {
           <div id="experience">
             <div className="section-heading"><p>06 — Experience</p><h2>Where I’ve contributed.</h2></div>
             <div className="warm-timeline">
-              {experience.map((item) => <article className="journey-item reveal-card" key={item.id}><span className="timeline-dot"></span><small>{item.start_date} — {item.is_current ? "Present" : item.end_date}</small><h3>{item.role}</h3><strong>{item.organization}</strong><p>{item.description}</p></article>)}
+              {experience.map((item) => (
+                <article className="journey-item reveal-card" key={item.id}>
+                  <span className="timeline-dot"></span>
+                  <small className="timeline-date">
+                    {formatDateRange(item.start_date, item.end_date)}
+                  </small>
+                  <h3>{item.role}</h3>
+                  <strong>{item.organization}</strong>
+                  <p>{item.description}</p>
+                  {item.certificate_image_url && (
+                    <img
+                      src={item.certificate_image_url}
+                      alt={item.title || item.role}
+                      className="certificate-img"
+                    />
+                  )}
+                </article>
+              ))}
             </div>
           </div>
         </div>

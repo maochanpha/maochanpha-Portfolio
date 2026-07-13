@@ -1758,10 +1758,11 @@ body {
 .warm-timeline::before { content: ""; position: absolute; left: 4px; top: 8px; bottom: 8px; width: 1px; background: #d1d5db; }
 .journey-item { position: relative; padding: 0 0 35px 15px; }
 .timeline-dot { position: absolute; left: -25px; top: 5px; width: 10px; height: 10px; border: 2px solid var(--cream); border-radius: 50%; background: var(--orange); box-shadow: 0 0 0 2px var(--orange); }
-.journey-item small { color: var(--orange-dark); font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+.journey-item .timeline-date { display: block; color: var(--orange-dark); font-size: 13px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
 .journey-item h3 { margin: 7px 0 3px; color: var(--ink); font-size: 19px; font-weight: 850; }
 .journey-item strong { color: var(--warm-muted); font-size: 13px; }
 .journey-item p { margin: 10px 0 0; color: var(--warm-muted); font-size: 13px; line-height: 1.6; }
+.journey-item .certificate-img { display: block; height: auto; }
 
 .contact-section { padding-top: 20px; }
 .contact-panel { display: grid; grid-template-columns: 1.1fr .9fr; gap: 70px; padding: clamp(38px, 7vw, 80px) !important; border-radius: 28px; color: white; background: var(--ink); box-shadow: var(--warm-shadow); }
