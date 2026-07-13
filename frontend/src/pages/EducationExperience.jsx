@@ -1,6 +1,27 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
 
+const formatDate = (dateString) => {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+  });
+};
+
+const formatDateRange = (startDate, endDate) => {
+  const start = formatDate(startDate);
+  const end = formatDate(endDate);
+
+  if (!start && !end) return "";
+  if (start && !end) return start;
+  if (start === end) return start;
+
+  return `${start} — ${end}`;
+};
+
 function EducationExperience() {
   const [education, setEducation] = useState([]);
   const [experience, setExperience] = useState([]);
@@ -70,8 +91,8 @@ function EducationExperience() {
 
                 <p className="text-primary mb-1">{item.role}</p>
 
-                <small className="text-muted">
-                  {item.start_date} - {item.is_current ? "Present" : item.end_date}
+                <small className="timeline-date">
+                  {formatDateRange(item.start_date, item.end_date)}
                 </small>
 
                 <p className="text-muted mt-2">{item.description}</p>
@@ -79,7 +100,7 @@ function EducationExperience() {
                 {item.certificate_image_url && (
                   <img
                     src={item.certificate_image_url}
-                    alt={item.role}
+                    alt={item.title || item.role}
                     className="certificate-img"
                   />
                 )}
